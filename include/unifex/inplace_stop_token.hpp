@@ -78,14 +78,14 @@ class inplace_stop_source {
  public:
   inplace_stop_source() noexcept = default;
 
-  ~inplace_stop_source();
+  UNIFEX_API ~inplace_stop_source();
 
   inplace_stop_source(const inplace_stop_source&) = delete;
   inplace_stop_source(inplace_stop_source&&) = delete;
   inplace_stop_source& operator=(inplace_stop_source&&) = delete;
   inplace_stop_source& operator=(const inplace_stop_source&) = delete;
 
-  bool request_stop() noexcept;
+  UNIFEX_API bool request_stop() noexcept;
 
   inplace_stop_token get_token() noexcept;
 
@@ -99,14 +99,14 @@ class inplace_stop_source {
   template <typename F>
   friend class inplace_stop_callback;
 
-  std::uint8_t lock() noexcept;
-  void unlock(std::uint8_t oldState) noexcept;
+  UNIFEX_API std::uint8_t lock() noexcept;
+  UNIFEX_API void unlock(std::uint8_t oldState) noexcept;
 
-  bool try_lock_unless_stop_requested(bool setStopRequested) noexcept;
+  UNIFEX_API bool try_lock_unless_stop_requested(bool setStopRequested) noexcept;
 
-  bool try_add_callback(inplace_stop_callback_base* callback) noexcept;
+  UNIFEX_API bool try_add_callback(inplace_stop_callback_base* callback) noexcept;
 
-  void remove_callback(inplace_stop_callback_base* callback) noexcept;
+  UNIFEX_API void remove_callback(inplace_stop_callback_base* callback) noexcept;
 
   static constexpr std::uint8_t stop_requested_flag = 1;
   static constexpr std::uint8_t locked_flag = 2;

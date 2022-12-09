@@ -29,10 +29,10 @@ class async_mutex {
   class lock_sender;
 
 public:
-  async_mutex() noexcept;
+  UNIFEX_API async_mutex() noexcept;
   async_mutex(const async_mutex &) = delete;
   async_mutex(async_mutex &&) = delete;
-  ~async_mutex();
+  UNIFEX_API ~async_mutex();
 
   async_mutex &operator=(const async_mutex &) = delete;
   async_mutex &operator=(async_mutex &&) = delete;
@@ -41,7 +41,7 @@ public:
 
   [[nodiscard]] lock_sender async_lock() noexcept;
 
-  void unlock() noexcept;
+  UNIFEX_API void unlock() noexcept;
 
 private:
   struct waiter_base {
@@ -119,7 +119,7 @@ private:
   // Attempt to enqueue the waiter object to the queue.
   // Returns true if successfully enqueued, false if it was not enqueued because
   // the lock was acquired synchronously.
-  bool try_enqueue(waiter_base *waiter) noexcept;
+  UNIFEX_API bool try_enqueue(waiter_base *waiter) noexcept;
 
   atomic_intrusive_queue<waiter_base, &waiter_base::next_> atomicQueue_;
   intrusive_queue<waiter_base, &waiter_base::next_> pendingQueue_;

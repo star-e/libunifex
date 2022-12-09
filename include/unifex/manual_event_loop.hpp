@@ -145,12 +145,12 @@ class context {
     return scheduler{this};
   }
 
-  void run();
+  UNIFEX_API void run();
 
-  void stop();
+  UNIFEX_API void stop();
 
  private:
-  void enqueue(task_base* task);
+  UNIFEX_API void enqueue(task_base* task);
 
   std::mutex mutex_;
   std::condition_variable cv_;

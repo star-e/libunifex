@@ -74,7 +74,7 @@ namespace _thread_unsafe_event_loop {
     explicit cancel_callback(operation_base& op) noexcept
       : op_(&op) {}
 
-    void operator()() noexcept;
+    UNIFEX_API void operator()() noexcept;
 
    private:
     operation_base* const op_;
@@ -370,8 +370,8 @@ class thread_unsafe_event_loop {
   friend operation_base;
   friend cancel_callback;
 
-  void enqueue(operation_base* op) noexcept;
-  void run_until_empty() noexcept;
+  UNIFEX_API void enqueue(operation_base* op) noexcept;
+  UNIFEX_API void run_until_empty() noexcept;
 
   operation_base* head_ = nullptr;
  public:

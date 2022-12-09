@@ -83,7 +83,7 @@ class scheduler {
       current_ = nullptr;
     }
 
-    void drain() noexcept;
+    UNIFEX_API void drain() noexcept;
 
     std::size_t recursionDepth_ = 1;
     operation_base* head_ = nullptr;
@@ -159,6 +159,10 @@ public:
     return false;
   }
 };
+
+thread_local scheduler::trampoline_state*
+    scheduler::trampoline_state::current_ = nullptr;
+
 } // namespace _trampoline
 
 using trampoline_scheduler = _trampoline::scheduler;

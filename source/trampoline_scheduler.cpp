@@ -17,9 +17,6 @@
 
 namespace unifex {
 
-thread_local trampoline_scheduler::trampoline_state*
-    trampoline_scheduler::trampoline_state::current_ = nullptr;
-
 void trampoline_scheduler::trampoline_state::drain() noexcept {
   while (head_ != nullptr) {
     operation_base* op = head_;

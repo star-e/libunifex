@@ -90,7 +90,7 @@ namespace unifex::win32
     // Initialise the IOCP context and pre-allocate storage for I/O
     // state needed to support at most 'maxIoOperations' concurrent I/O
     // operations.
-    explicit low_latency_iocp_context(std::size_t maxIoOperations);
+    UNIFEX_API explicit low_latency_iocp_context(std::size_t maxIoOperations);
 
     low_latency_iocp_context(low_latency_iocp_context&&) = delete;
     low_latency_iocp_context(const low_latency_iocp_context&) = delete;
@@ -98,7 +98,7 @@ namespace unifex::win32
     operator=(const low_latency_iocp_context&) = delete;
     low_latency_iocp_context& operator=(low_latency_iocp_context&&) = delete;
 
-    ~low_latency_iocp_context();
+    UNIFEX_API ~low_latency_iocp_context();
 
     // Drive the event loop until a request to stop is communicated via
     // the passed StopToken.
@@ -147,12 +147,13 @@ namespace unifex::win32
       vectored_io_state* ioState;
 
       // Cancel outstanding I/O operations (if any)
-      void cancel_io() noexcept;
+      UNIFEX_API void cancel_io() noexcept;
+
 
       // Poll for whether or not the operation has completed.
       // Returns 'true' if the operation is completed (in which case the
       // operation has 'acquire' semantics), 'false' otherwise.
-      bool is_complete() noexcept;
+      UNIFEX_API bool is_complete() noexcept;
 
       // Start reading the next 'buffer.size()' bytes into 'buffer'.
       //
@@ -166,12 +167,12 @@ namespace unifex::win32
       // schedule a 'poll' of this operation by setting this->callback
       // and calling context.schedule_poll(this). This will schedule the
       // callback to be run immediately (if it completed synchronously).
-      bool start_read(span<std::byte> buffer) noexcept;
+      UNIFEX_API bool start_read(span<std::byte> buffer) noexcept;
 
       // Start writing the context of 'buffer' to fileHandle.
-      bool start_write(span<const std::byte> buffer) noexcept;
+      UNIFEX_API bool start_write(span<const std::byte> buffer) noexcept;
 
-      std::size_t get_result(std::error_code& ec) noexcept;
+      UNIFEX_API std::size_t get_result(std::error_code& ec) noexcept;
     };
 
     struct vectored_io_state {
@@ -244,26 +245,26 @@ namespace unifex::win32
       void operator()() noexcept { op.start(); }
     };
 
-    void run_impl(bool& stopFlag);
+    UNIFEX_API void run_impl(bool& stopFlag);
 
     // Dequeue items from remote queue and move them to the
     // ready-to-run queue.
     // Returns true if any items were dequeued.
-    bool try_dequeue_remote_work() noexcept;
+    UNIFEX_API bool try_dequeue_remote_work() noexcept;
 
-    bool poll_is_complete(vectored_io_state& state) noexcept;
+    UNIFEX_API bool poll_is_complete(vectored_io_state& state) noexcept;
 
     // Obtain the I/O state that contains a given io_status_block structure.
-    vectored_io_state* to_io_state(ntapi::IO_STATUS_BLOCK* io) noexcept;
+    UNIFEX_API vectored_io_state* to_io_state(ntapi::IO_STATUS_BLOCK* io) noexcept;
 
     bool is_running_on_io_thread() const noexcept {
       return activeThreadId_.load(std::memory_order_relaxed) ==
           std::this_thread::get_id();
     }
 
-    void schedule(operation_base* op) noexcept;
-    void schedule_local(operation_base* op) noexcept;
-    void schedule_remote(operation_base* op) noexcept;
+    UNIFEX_API void schedule(operation_base* op) noexcept;
+    UNIFEX_API void schedule_local(operation_base* op) noexcept;
+    UNIFEX_API void schedule_remote(operation_base* op) noexcept;
 
     // If an I/O state is available, attaches an unused I/O state to
     // op->ioState and returns true, otherwise returns false if no
@@ -271,7 +272,7 @@ namespace unifex::win32
     //
     // If 'true' is returned then the caller can populate op->ioState
     // and initiate the I/O using its IO_STATUS_BLOCK structures.
-    [[nodiscard]] bool try_allocate_io_state_for(io_operation* op) noexcept;
+    UNIFEX_API [[nodiscard]] bool try_allocate_io_state_for(io_operation* op) noexcept;
 
     // Schedule the specified 'op' to be called back (calling op->callback)
     // when an I/O state becomes available and has been allocated to 'op'.
@@ -279,18 +280,18 @@ namespace unifex::win32
     // Do this only after an unsuccessful call to try_allocate_io_state_for()
     // asynchronously wait until some other I/O operation completes and frees
     // up an other I/O state.
-    void schedule_when_io_state_available(io_operation* op) noexcept;
+    UNIFEX_API void schedule_when_io_state_available(io_operation* op) noexcept;
 
     // Mark the io state as released and let it return to the pool.
-    void release_io_state(vectored_io_state* state) noexcept;
+    UNIFEX_API void release_io_state(vectored_io_state* state) noexcept;
 
     // Schedule this operation to be polled next time we run out of work
     // in the ready-queue before going back to the OS for completion-events.
-    void schedule_poll_io(io_operation* op) noexcept;
+    UNIFEX_API void schedule_poll_io(io_operation* op) noexcept;
 
     // Attempt to associate the specified file-handle with this I/O context
     // so that its I/O completion events are posted to this context's IOCP.
-    void associate_file_handle(handle_t fileHandle);
+    UNIFEX_API void associate_file_handle(handle_t fileHandle);
 
   private:
     ////
@@ -830,7 +831,7 @@ namespace unifex::win32
     }
 
   private:
-    static std::tuple<readable_byte_stream, writable_byte_stream>
+    UNIFEX_API static std::tuple<readable_byte_stream, writable_byte_stream>
     open_pipe_impl(low_latency_iocp_context& ctx);
 
     low_latency_iocp_context* context_;

@@ -49,9 +49,9 @@ namespace _static_thread_pool {
     template <typename Receiver>
     friend struct _op;
   public:
-    context();
-    context(std::uint32_t threadCount);
-    ~context();
+    UNIFEX_API context();
+    UNIFEX_API context(std::uint32_t threadCount);
+    UNIFEX_API ~context();
 
     class scheduler {
       template <typename Receiver>
@@ -114,16 +114,16 @@ namespace _static_thread_pool {
 
     scheduler get_scheduler() noexcept { return scheduler{*this}; }
 
-    void request_stop() noexcept;
+    UNIFEX_API void request_stop() noexcept;
 
   private:
     class thread_state {
     public:
-      task_base* try_pop();
-      task_base* pop();
-      bool try_push(task_base* task);
-      void push(task_base* task);
-      void request_stop();
+      UNIFEX_API task_base* try_pop();
+      UNIFEX_API task_base* pop();
+      UNIFEX_API bool try_push(task_base* task);
+      UNIFEX_API void push(task_base* task);
+      UNIFEX_API void request_stop();
 
     private:
       std::mutex mut_;
@@ -132,10 +132,10 @@ namespace _static_thread_pool {
       bool stopRequested_ = false;
     };
 
-    void run(std::uint32_t index) noexcept;
-    void join() noexcept;
+    UNIFEX_API void run(std::uint32_t index) noexcept;
+    UNIFEX_API void join() noexcept;
 
-    void enqueue(task_base* task) noexcept;
+    UNIFEX_API void enqueue(task_base* task) noexcept;
 
     std::uint32_t threadCount_;
     std::vector<std::thread> threads_;
