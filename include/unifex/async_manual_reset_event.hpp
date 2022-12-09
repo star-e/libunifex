@@ -76,7 +76,7 @@ struct async_manual_reset_event {
   explicit async_manual_reset_event(bool startSignalled) noexcept
     : state_(startSignalled ? this : nullptr) {}
 
-  void set() noexcept;
+  UNIFEX_API void set() noexcept;
 
   bool ready() const noexcept {
     return state_.load(std::memory_order_acquire) ==
@@ -108,7 +108,7 @@ struct async_manual_reset_event {
   //       a member function on _op_base and so will already have op in first
   //       argument position; making this function a member would require some
   //       register-juggling code, which would increase binary size
-  static void start_or_wait(_op_base& op, async_manual_reset_event& evt) noexcept;
+  UNIFEX_API static void start_or_wait(_op_base& op, async_manual_reset_event& evt) noexcept;
 };
 
 struct _op_base {

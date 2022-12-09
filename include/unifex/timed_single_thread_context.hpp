@@ -59,7 +59,7 @@ namespace _timed_single_thread_context {
     explicit cancel_callback(task_base* task) noexcept
       : task_(task) {}
 
-    void operator()() noexcept;
+    UNIFEX_API void operator()() noexcept;
   };
 
   class scheduler;
@@ -263,8 +263,8 @@ class timed_single_thread_context {
   template <typename Receiver>
   friend struct _timed_single_thread_context::_at_op;
 
-  void enqueue(task_base* task) noexcept;
-  void run();
+  UNIFEX_API void enqueue(task_base* task) noexcept;
+  UNIFEX_API void run();
 
   std::mutex mutex_;
   std::condition_variable cv_;
@@ -278,8 +278,8 @@ class timed_single_thread_context {
   using clock_t = _timed_single_thread_context::clock_t;
   using time_point = _timed_single_thread_context::time_point;
 
-  timed_single_thread_context();
-  ~timed_single_thread_context();
+  UNIFEX_API timed_single_thread_context();
+  UNIFEX_API ~timed_single_thread_context();
 
   scheduler get_scheduler() noexcept {
     return scheduler{*this};

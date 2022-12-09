@@ -43,3 +43,25 @@ UNIFEX_DIAGNOSTIC_PUSH
 UNIFEX_DIAGNOSTIC_POP
 
 #define AND UNIFEX_AND
+
+#ifdef _MSC_VER
+#ifdef unifex_STATIC
+#define UNIFEX_API
+#else
+#ifdef unifex_EXPORTS
+#ifdef unifex_DEF
+#define UNIFEX_API
+#else
+#define UNIFEX_API __declspec(dllexport)
+#endif
+#else
+#ifdef _LIB
+#define UNIFEX_API __declspec(dllimport)
+#else
+#define UNIFEX_API __declspec(dllimport)
+#endif
+#endif
+#endif
+#else
+#define UNIFEX_API
+#endif

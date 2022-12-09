@@ -107,15 +107,15 @@ class windows_thread_pool {
 public:
 
     // Initialise to use the process' default thread-pool.
-    windows_thread_pool() noexcept;
+    UNIFEX_API windows_thread_pool() noexcept;
 
     // Construct to an independend thread-pool with a dynamic number of
     // threads that varies between a min and a max number of threads.
-    explicit windows_thread_pool(std::uint32_t minThreadCount, std::uint32_t maxThreadCount);
+    UNIFEX_API explicit windows_thread_pool(std::uint32_t minThreadCount, std::uint32_t maxThreadCount);
 
-    ~windows_thread_pool();
+    UNIFEX_API ~windows_thread_pool();
 
-    scheduler get_scheduler() noexcept;
+    UNIFEX_API scheduler get_scheduler() noexcept;
 
 private:
     PTP_POOL threadPool_;
@@ -129,12 +129,12 @@ public:
     schedule_op_base(schedule_op_base&&) = delete;
     schedule_op_base& operator=(schedule_op_base&&) = delete;
 
-    ~schedule_op_base();
+    UNIFEX_API ~schedule_op_base();
 
-    void start() & noexcept;
+    UNIFEX_API void start() & noexcept;
 
 protected:
-    schedule_op_base(windows_thread_pool& pool, PTP_WORK_CALLBACK workCallback);
+    UNIFEX_API schedule_op_base(windows_thread_pool& pool, PTP_WORK_CALLBACK workCallback);
 
 private:
     TP_CALLBACK_ENVIRON environ_;

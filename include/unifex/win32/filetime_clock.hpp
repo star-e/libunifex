@@ -114,7 +114,7 @@ public:
         std::uint64_t ticks_;
     };
 
-    static time_point now() noexcept;
+    UNIFEX_API static time_point now() noexcept;
 };
 
 } // namespace unifex::win32

@@ -19,6 +19,8 @@
 
 #include <utility>
 
+#include <unifex/detail/prologue.hpp>
+
 namespace unifex::win32 {
 
 class safe_handle {
@@ -42,7 +44,7 @@ public:
 
     handle_t release() noexcept { return std::exchange(handle_, nullptr); }
 
-    void reset() noexcept;
+    UNIFEX_API void reset() noexcept;
 
     void swap(safe_handle& other) noexcept {
         std::swap(handle_, other.handle_);
@@ -73,3 +75,5 @@ private:
 };
 
 } // namespace unifex::win32
+
+#include <unifex/detail/epilogue.hpp>
