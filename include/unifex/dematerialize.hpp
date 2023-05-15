@@ -24,6 +24,7 @@
 #include <unifex/type_traits.hpp>
 #include <unifex/std_concepts.hpp>
 #include <unifex/bind_back.hpp>
+#include <unifex/blocking.hpp>
 
 #include <type_traits>
 
@@ -75,6 +76,7 @@ namespace _demat {
       return static_cast<CPO&&>(cpo)(std::as_const(r.receiver_));
     }
 
+  #if UNIFEX_ENABLE_CONTINUATION_VISITATIONS
     template <typename Func>
     friend void tag_invoke(tag_t<visit_continuations>, const type& r, Func&& func) noexcept(std::
                                   is_nothrow_invocable_v<
@@ -82,6 +84,7 @@ namespace _demat {
                                       const Receiver&>) {
       std::invoke(func, std::as_const(r.receiver_));
     }
+  #endif
 
    private:
     Receiver receiver_;
@@ -177,6 +180,9 @@ namespace _demat {
           receiver_t<Receiver>{static_cast<Receiver&&>(r)});
     }
 
+    friend constexpr auto tag_invoke(tag_t<unifex::blocking>, const type& self) noexcept {
+      return blocking(self.source_);
+    }
   private:
     Source source_;
   };

@@ -13,18 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
-
-#include <unifex/config.hpp>
+#include <unifex/async_auto_reset_event.hpp>
+#include <unifex/reduce_stream.hpp>
+#include <unifex/sync_wait.hpp>
 #include <unifex/then.hpp>
 
-#include <unifex/detail/prologue.hpp>
+#include <cstdio>
 
-UNIFEX_DEPRECATED_HEADER("transform.hpp is deprecated. Use then.hpp instead.")
+using namespace unifex;
 
-namespace unifex {
-[[deprecated("unifex::transform has been renamed to unifex::then")]]
-inline constexpr _then::_cpo::_fn transform {};
-} // namespace unifex
+int main() {
+  async_auto_reset_event evt{true};
+  sync_wait(then(
+      reduce_stream(
+          evt.stream(),
+          0,
+          [&evt](int count) {
+            std::printf("got %i\n", count);
+            if (count < 2) {
+              evt.set();
+            } else {
+              evt.set_done();
+            }
+            return ++count;
+          }),
+      [](int result) { std::printf("result %d\n", result); }));
 
-#include <unifex/detail/epilogue.hpp>
+  return 0;
+}

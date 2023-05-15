@@ -19,6 +19,8 @@
 #include <unifex/async_scope.hpp>
 #include <unifex/sync_wait.hpp>
 
+#include <optional>
+
 #include <gtest/gtest.h>
 
 #if !UNIFEX_NO_COROUTINES
@@ -39,7 +41,7 @@ struct CreateTest : testing::Test {
   void anIntAPI(int a, int b, void* context, void (*completed)(void* context, int result)) {
     // Execute some work asynchronously on some other thread. When its
     // work is finished, pass the result to the callback.
-    someScope.spawn_call_on(someThread.get_scheduler(), [=]() noexcept {
+    someScope.detached_spawn_call_on(someThread.get_scheduler(), [=]() noexcept {
       auto result = a + b;
       completed(context, result);
     });
@@ -48,7 +50,7 @@ struct CreateTest : testing::Test {
   void aVoidAPI(void* context, void (*completed)(void* context)) {
     // Execute some work asynchronously on some other thread. When its
     // work is finished, pass the result to the callback.
-    someScope.spawn_call_on(someThread.get_scheduler(), [=]() noexcept {
+    someScope.detached_spawn_call_on(someThread.get_scheduler(), [=]() noexcept {
       completed(context);
     });
   }
@@ -92,14 +94,13 @@ TEST_F(CreateTest, VoidWithContextTest) {
 #if !UNIFEX_NO_COROUTINES
 
 TEST_F(CreateTest, AwaitTest) {
-  auto tsk = [this](int a, int b) -> task<int> {
-    co_return co_await create<int>([a, b, this](auto& rec) {
-      anIntAPI(a, b, &rec, [](void* context, int result) {
+  auto tsk = [](int a, int b, auto self) -> task<int> {
+    co_return co_await create<int>([a, b, self](auto& rec) {
+      self->anIntAPI(a, b, &rec, [](void* context, int result) {
         unifex::void_cast<decltype(rec)>(context).set_value(result);
       });
     });
-  }(1, 2);
-
+  }(1, 2, this);
   std::optional<int> res = sync_wait(std::move(tsk));
   ASSERT_TRUE(res.has_value());
   EXPECT_EQ(*res, 3);

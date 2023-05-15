@@ -1,86 +1,95 @@
 # Index
 
-* Receiver Queries
-  * `get_stop_token()`
-  * `get_scheduler()`
-  * `get_allocator()`
-  * `get_execution_policy()`
-* Sender Factories
-  * `create`
-  * `just()`
-  * `just_done()` / `stop()`
-  * `just_error()`
-  * `just_void_or_done()`
-  * `stop_if_requested()`
-* Sender Algorithms
-  * `then()`
-  * `finally()`
-  * `via()`
-  * `typed_via()`
-  * `on()`
-  * `let_value()`
-  * `let_error()`
-  * `let_done()`
-  * `let_value_with()`
-  * `let_value_with_stop_source()`
-  * `sequence()`
-  * `sync_wait()`
-  * `when_all()`
-  * `materialize()`
-  * `dematerialize()`
-  * `repeat_effect_until()`
-  * `repeat_effect()`
-  * `retry_when()`
-  * `stop_when()`
-  * `allocate()`
-  * `with_query_value()`
-  * `with_allocator()`
-  * `done_as_optional()`
-* Sender Types
-  * `async_trace_sender`
-* Sender Queries
-  * `blocking()`
-* Many Sender Algorithms
-  * `bulk_transform()`
-  * `bulk_join()`
-  * `bulk_schedule()`
-* Stream Algorithms
-  * `adapt_stream()`
-  * `next_adapt_stream()`
-  * `reduce_stream()`
-  * `for_each()`
-  * `transform_stream()`
-  * `via_stream()`
-  * `typed_via_stream()`
-  * `on_stream()`
-  * `type_erase<Ts...>()`
-  * `take_until()`
-  * `single()`
-  * `stop_immediately()`
-  * `delay()`
-* Stream Types
-  * `range_stream`
-  * `type_erased_stream<Ts...>`
-  * `never_stream`
-* Scheduler Types
-  * `inline_scheduler`
-  * `single_thread_context`
-  * `trampoline_scheduler`
-  * `timed_single_thread_context`
-  * `thread_unsafe_event_loop`
-  * `new_thread_context`
-  * `linux::io_uring_context`
-* StopToken Types
-  * `unstoppable_token`
-  * `inplace_stop_token` / `inplace_stop_source`
-* Synchronisation Primitives
-  * `async_manual_reset_event`
-  * `async_mutex`
-* Coroutine support
-  * `task`
-  * `at_coroutine_exit`
-* Other
-  * `async_scope`
+* [Receiver Queries](#receiver-queries)
+  * [`get_scheduler()`](#get_schedulerreceiver)
+  * [`get_allocator()`](#get_allocatorreceiver)
+  * [`get_stop_token()`](#get_stop_tokenreceiver)
+  * [`get_execution_policy()`](#get_execution_policymanyreceiver)
+* [Sender Factories](#sender-factories)
+  * [`create()`](#createvaluetypescallable)
+  * [`just()`](#justargs)
+  * [`just_done()` / `stop()`](#just_done--stop)
+  * [`just_error()`](#just_errore)
+  * [`just_void_or_done()`](#just_void_or_doneisvoid)
+  * [`just_from()`](#just_fromcallable)
+  * [`stop_if_requested()`](#stop_if_requested)
+  * [`defer()`](#defercallable)
+* [Sender Algorithms](#sender-algorithms)
+  * [`detach_on_cancel()`](#detach_on_cancelsender-sender---sender)
+  * [`then()`](#thensender-predecessor-func-func---sender)
+  * [`let_value()`](#let_valuesender-pred-invocable-func---sender)
+  * [`let_error()`](#let_errorsender-predecessor-func-func---sender)
+  * [`let_done()`](#let_donesender-predecessor-func-func---sender)
+  * [`let_value_with()`](#let_value_withinvocable-state_factory-invocable-func---sender)
+  * [`let_value_with_stop_source()`](#let_value_with_stop_sourceinvocable-func---sender)
+  * [`let_value_with_stop_token()`](#let_value_with_stop_tokeninvocable-func---sender)
+  * [`finally()`](#finallysender-source-sender-completion---sender)
+  * [`via()`](#viascheduler-scheduler-sender-sender---sender)
+  * [`typed_via()`](#typed_viasender-source-scheduler-scheduler---sender)
+  * [`on()`](#onscheduler-scheduler-sender-sender---sender)
+  * [`sequence()`](#sequencesender-predecessors-sender-last---sender)
+  * [`sync_wait()`](#sync_waitsender-sender---stdoptionalresult)
+  * [`when_all()`](#when_allsenders---sender)
+  * [`materialize()`](#materializesender-sender---sender)
+  * [`dematerialize()`](#dematerializesender-sender---sender)
+  * [`repeat_effect_until()`](#repeat_effect_untilsender-source-invocable-predicate---sender)
+  * [`repeat_effect()`](#repeat_effectsender-source---sender)
+  * [`retry_when()`](#retry_whensender-source-invocableerror-handler---sender)
+  * [`stop_when()`](#stop_whensender-source-sender-trigger---sender)
+  * [`allocate()`](#allocatesender-sender---sender)
+  * [`with_query_value()`](#with_query_valuesender-sender-cpo-cpo-t-value---sender)
+  * [`with_allocator()`](#with_allocatorsender-sender-allocator-allocator---allocator)
+  * [`done_as_optional()`](#done_as_optionalsender-sender---sender)
+  * [`nest()`](#nestsender-sender-scope-scope---sender)
+* [Sender Types](#sender-types)
+  * [`async_trace_sender`](#async_trace_sender)
+* [Sender Queries](#sender-queries)
+  * [`blocking()`](#blockingconst-sender---blocking_kind)
+* [Many Sender Algorithms](#many-sender-algorithms)
+  * [`bulk_transform()`](#bulk_transformmanysender-sender-func-func-funcpolicy-policy---manysender)
+  * [`bulk_join()`](#bulk_joinmanysender-source---sender)
+  * [`bulk_schedule()`](#bulk_schedulescheduler-sched-count-n---manysender)
+* [Stream Algorithms](#stream-algorithms)
+  * [`adapt_stream()`](#adapt_streamstream-stream-func-adaptor---stream)
+  * [`next_adapt_stream()`](#next_adapt_streamstream-stream-func-adaptor---stream)
+  * [`cleanup_adapt_stream()`](#cleanup_adapt_streamstream-stream-func-adaptor---stream)
+  * [`reduce_stream()`](#reduce_streamstream-stream-t-initialstate-func-reducer---sendert)
+  * [`for_each()`](#for_eachstream-stream-func-func---sendervoid)
+  * [`transform_stream()`](#transform_streamstream-stream-func-func---stream)
+  * [`via_stream()`](#via_streamscheduler-scheduler-stream-stream---stream)
+  * [`typed_via_stream()`](#typed_via_streamscheduler-scheduler-stream-stream---stream)
+  * [`on_stream()`](#on_streamscheduler-scheduler-stream-stream---stream)
+  * [`type_erase<Ts...>()`](#type_erasetsstream-stream---type_erased_streamts)
+  * [`take_until()`](#take_untilstream-source-stream-trigger---stream)
+  * [`single()`](#singlesender-sender---stream)
+  * [`stop_immediately()`](#stop_immediatelytsstream-stream---stream)
+  * [`delay()`](#delaystream-stream-timescheduler-scheduler-duration-d---stream)
+* [Stream Types](#stream-types)
+  * [`range_stream`](#range_stream)
+  * [`type_erased_stream<Ts...>`](#type_erased_streamts)
+  * [`never_stream`](#never_stream)
+* [Scheduler Algorithms](#scheduler-algorithms)
+  * [`schedule()`](#schedulescheduler-schedule---senderofvoid)
+* [Scheduler Types](#scheduler-types)
+  * [`inline_scheduler`](#inline_scheduler)
+  * [`single_thread_context`](#single_thread_context)
+  * [`trampoline_scheduler`](#trampoline_scheduler)
+  * [`timed_single_thread_context`](#timed_single_thread_context)
+  * [`thread_unsafe_event_loop`](#thread_unsafe_event_loop)
+  * [`new_thread_context`](#new_thread_context)
+  * [`linux::io_uring_context`](#linuxio_uring_context)
+* [StopToken Types](#stoptoken-types)
+  * [`unstoppable_token`](#unstoppable_token)
+  * [`inplace_stop_token` / `inplace_stop_source`](#inplace_stop_token-and-inplace_stop_source)
+* [Synchronisation Primitives](#synchronisation-primitives)
+  * [`async_manual_reset_event`](#async_manual_reset_event)
+  * [`async_mutex`](#async_mutex)
+* [Coroutine support](#coroutine-support)
+  * [`task`](#task)
+  * [`at_coroutine_exit`](#at_coroutine_exit)
+* [Other](#other)
+  * [`async_scope`](#async_scope)
+  * [`variant_sender`](#variant_sender)
 
 # Receiver Queries
 
@@ -242,10 +251,32 @@ caught and passed to the receiver's `set_error` with `std::current_exception()`.
 
 # Sender Algorithms
 
+### `detach_on_cancel(Sender sender) -> Sender`
+
+Takes a Sender and produces a new Sender that will heap-allocate its operation
+state for the purpose of detaching a slow operation upon request to stop.
+
+Completion of the `sender` is otherwise delegated to the new Sender.
+
 ### `then(Sender predecessor, Func func) -> Sender`
 
 Returns a sender that transforms the value of the `predecessor` by calling
 `func(value)`.
+
+For example:
+```c++
+then(some_operation(),
+    [](auto& x) {
+      return func(x);
+    });
+```
+is roughly equivalent to the following coroutine code:
+```c++
+{
+  auto x = co_await some_operation();
+  func(x);
+}
+```
 
 ### `let_value(Sender pred, Invocable func) -> Sender`
 
@@ -355,6 +386,28 @@ Calling `.request_stop()` on the stop-source passed to the function requests
 cancellation of the operation returned by the function. Note that cancellation
 may also be requested through the stop-token of the receiver that is connected
 to the sender returned by `let_value_with_stop_source()`.
+
+### `let_value_with_stop_token(Invocable func) -> Sender`
+
+The `let_value_with_stop_token()` algorithm takes a function object that is
+invoked at `unifex::connect()` time with an `inplace_stop_token` object that
+can be used to receive a stop-request sent by the parent operation through the
+receiver it passes to connect().
+
+The function invocation must return a Sender which is immediately connected.
+The result of the sender returned from the function becomes the result of the
+`let_value_with_stop_token()` sender.
+
+The stop-token passed to the function is only guaranteed to be valid until
+the sender returned by the function completes.
+
+For example:
+```c++
+let_value_with_stop_token(
+    [](unifex::inplace_stop_token stop_token) {
+      return other_operation(stop_token);
+    });
+```
 
 ### `finally(Sender source, Sender completion) -> Sender`
 
@@ -665,6 +718,13 @@ task<void> g() {
 }
 ```
 
+### `nest(Sender sender, Scope& scope) -> Sender`
+
+`nest` registers the given *Sender* with the given "scope", which should be of a
+type that works like `v1::async_scope` or `v2::async_scope`. A *Sender* that has
+been registered with a scope will prevent that scope from being joined until the
+*Sender* has either been discarded or executed.
+
 ## Sender Types
 
 ### `async_trace_sender`
@@ -767,6 +827,11 @@ applies `cleanupAdaptor()` to `cleanup(stream)`.
 
 Applies `adaptor()` to `next(stream)` only.
 The `cleanup(stream)` Sender is passed through unchanged.
+
+### `cleanup_adapt_stream(Stream stream, Func adaptor) -> Stream`
+
+Applies `adaptor()` to `cleanup(stream)` only.
+The `next(stream)` Sender is passed through unchanged.
 
 ### `reduce_stream(Stream stream, T initialState, Func reducer) -> Sender<T>`
 
@@ -1155,8 +1220,10 @@ namespace unifex
     // Asserts if the sender returned from cleanup has not yet completed.
     ~async_scope();
 
-    // Returns a sender that, when started, marks this scope as cleaned up,
-    // requests stop on the internal stop source, and then waits for all
+    // Returns a sender that, when started, marks this scope so that no more
+    // work can be spawned within it,
+    // requests stop on the internal stop source,
+    // i.e. cancellation of all outstanding work, and then waits for all
     // outstanding work to complete.
     //
     // The sender returned from cleanup must complete before this scope is
@@ -1166,7 +1233,35 @@ namespace unifex
     // times in series or in parallel).
     [[nodiscard]] sender auto cleanup() noexcept;
 
-    // Connects sender to an internal receiver and starts the operation.  Once
+    // Returns a sender that, when started, marks this scope so that no more
+    // work can be spawned within it and then waits for all outstanding work
+    // to complete.
+    //
+    // The sender returned from complete must complete before this scope is
+    // destroyed.
+    //
+    // complete is thread-safe and idempotent (i.e. it can be invoked multiple
+    // times in series or in parallel).
+    [[nodiscard]] sender auto complete() noexcept;
+
+    // Returns a stop token from the scope's internal stop source.
+    inplace_stop_token get_stop_token() noexcept;
+
+    // Marks the scope so that no more work can be spawned within it,
+    // requests stop on the internal stop source,
+    // i.e. cancellation of all outstanding work
+    void request_stop() noexcept;
+
+    // Implemented as (void)spawn(sender).
+    void detached_spawn(sender);
+
+    // Implemented as detached_spawn(on(scheduler, sender)).
+    void detached_spawn_on(scheduler, sender);
+
+    // Implemented as detached_spawn_on(scheduler, just_from(invocable)).
+    void detached_spawn_call_on(scheduler, invocable);
+
+    // Connects sender to an internal receiver and starts the operation. Once
     // started, the given sender must complete with void or done; completing
     // with an error will result in a call to std::terminate.
     //
@@ -1174,20 +1269,69 @@ namespace unifex
     // with a stoppable token that becomes stopped when clean-up begins.
     //
     // Space for the operation state is allocated with std::make_unique and
-    // so this operation may throw if the allocation fails.  This operation may
+    // so this operation may throw if the allocation fails. This operation may
     // also throw if connect throws.
     //
     // Once connect has succeeded, start will only be called if this scope has
     // not yet been cleaned up; if a call to spawn loses a race with a call to
     // cleanup, the operation state created by connect will be destroyed and
     // deallocated without being started.
-    void spawn(sender);
+    //
+    // future is a handle to an eagerly-started operation; it is also a Sender,
+    // the result is retreived by connecting it to an appropriate Receiver
+    // and starting the resulting Operation.
+    //
+    // Discarding a future without connecting or starting it requests cancellation
+    // of the associated operation and discards the operation's result when it
+    // ultimately completes.
+    //
+    // Requesting cancellation of a connected-and-started future will also request
+    // cancellation of the associated operation.
+    future spawn(sender);
 
-    // Implemented as spawn(on(scheduler, sender)).
-    void spawn_on(scheduler, sender);
+    // Implemented as detached_spawn(on(scheduler, sender)).
+    future spawn_on(scheduler, sender);
 
     // Implemented as spawn_on(scheduler, just_from(invocable)).
-    void spawn_call_on(scheduler, invocable);
+    future spawn_call_on(scheduler, invocable);
+
+    // Returns a new sender that, when connected and started, connects and starts
+    // the given sender.
+    //
+    // Returned sender owns a reference to this async_scope. Discarding the sender
+    // prior to connecting it or discarding the operation prior to starting it
+    // discards the reference to this async_scope.
+    //
+    // The receiver to which the sender is connected responds to get_stop_token
+    // with a stoppable token that becomes stopped when clean-up begins.
+    [[nodiscard]] sender auto attach(sender);
+
+    // Implemented as attach(just_from(fun))
+    [[nodiscard]] sender auto attach_call(fun);
+
+    // Implemented as attach(on(scheduler, sender))
+    [[nodiscard]] sender auto attach_on(scheduler, sender);
+
+    // Implemented as attach_on(scheduler, just_from(fun))
+    [[nodiscard]] sender auto attach_call_on(scheduler, fun);
   };
 }
+```
+
+### `variant_sender`
+
+Non-type erased sender that is parameterized on multiple sender types.
+Receivers must implement `set_value` for all value types produced by all
+senders.
+
+```
+defer(
+  [condition]()
+      -> variant_sender<decltype(just(42)), decltype(just(true))> {
+    if (condition) {
+      return just(42);
+    } else {
+      return just(true);
+    }
+  });
 ```
