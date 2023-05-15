@@ -86,7 +86,7 @@ struct _promise_base {
     }
   };
 
-  void transform_schedule_sender_impl_(any_scheduler newSched);
+  UNIFEX_API void transform_schedule_sender_impl_(any_scheduler newSched);
 
   coro::suspend_always initial_suspend() noexcept {
     return {};
