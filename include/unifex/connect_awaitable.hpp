@@ -181,6 +181,7 @@ namespace _await_cpo {
         // after the coroutine is suspended so that it is safe
         // for the receiver to destroy the coroutine.
         co_yield [&](result_type&& result) {
+              std::ignore = result;
               return [&] {
                 constexpr size_t valueOverloadCount =
                     sender_value_types_t<Awaitable, count_types, single_value_type>::value;
