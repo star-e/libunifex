@@ -15,6 +15,16 @@
  */
 #include <unifex/static_thread_pool.hpp>
 
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif // WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include <processthreadsapi.h>
+#include <string>
+#endif
+
 namespace unifex {
 namespace _static_thread_pool {
   context::context()
@@ -51,6 +61,11 @@ namespace _static_thread_pool {
   }
 
   void context::run(std::uint32_t index) noexcept {
+#ifdef _WIN32
+    SetThreadDescription(
+      GetCurrentThread(),
+      (L"unifex::static_thread_pool " + std::to_wstring(index)).c_str());
+#endif
     while (true) {
       task_base* task = nullptr;
       for (std::uint32_t i = 0; i < threadCount_; ++i) {
